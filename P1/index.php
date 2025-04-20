@@ -3,7 +3,12 @@ echo "WebServer ID: ";
 echo gethostname();
 
 # Configure connexion
-$conn = pg_connect(...);
+$servidor = "Database";
+$port = "5432";
+$dbname = "AppDB";
+$user = "useradmin";
+$password = "secure1234";
+$conn = pg_connect("host=$servidor port=$port dbname=$dbname user=$user password=$password");
 
 # Check connexion
 if (!$conn) {
@@ -12,13 +17,14 @@ if (!$conn) {
 }
 
 # Prepare insert query
-$query = "...";
-
-# Run insert query
-pg_query(...);
+$query = 'INSERT INTO "AppTable" ("WebServer", "Datetime") VALUES ($1, now())';
+$params = [gethostname()];
+# Run insert query - Fem ús de pg_query_params per seguretat injection-free
+pg_query_params($conn, $query, $params);
 
 # Run read query
-$result = pg_query(...);
+$query = 'SELECT COUNT(*) FROM "AppTable" WHERE "WebServer"=$1';
+$result = pg_query_params($conn,$query,$params);
 if (!$result) {
   echo "An error occurred.\n";
   exit;
