@@ -1,0 +1,198 @@
+// docker network inspect ManagementNet
+[
+    {
+        "Name": "ManagementNet",
+        "Id": "a3909c417d40051b3d7b0675f75119b1541aa7ef5d5b1298353e2e463cbb05ec",
+        "Created": "2025-04-20T22:25:12.960517195Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.20.0.0/16",
+                    "Gateway": "172.20.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "3bc12d2caf2341ff1e5c00fd1ab22c65dd3684c5e91978af14c35f48e9f6dedb": {
+                "Name": "DataBaseManager",
+                "EndpointID": "040d8a82f367f7b01fb5b1fe11d3c3249aeb6ef71faf631729304b027ae3461b",
+                "MacAddress": "1e:d8:ec:b1:17:d1",
+                "IPv4Address": "172.20.0.3/16",
+                "IPv6Address": ""
+            },
+            "9503f2424a4707275cdcc2f527d90b0ef14c9b558ccd0cd56fcec10482a0a808": {
+                "Name": "Database",
+                "EndpointID": "fc4657188330ab4eef17bd137872a1db6e04f52a3cf1df852837e650643668a6",
+                "MacAddress": "9e:78:32:34:07:dc",
+                "IPv4Address": "172.20.0.2/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {}
+    }
+]
+
+// docker network inspect FrontendNet
+[
+    {
+        "Name": "FrontendNet",
+        "Id": "fb606830986fbdb0106438d5b561132c78aff2a8c533bd5630b558b0d18afe57",
+        "Created": "2025-04-20T21:05:00.059990404Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "2035170324b89c729f2725f5a93d713d3e07fe0b0387dc7805e7407b7986386c": {
+                "Name": "WebServer3",
+                "EndpointID": "26a67a5f904ff2b1638a2b41753a25105316e4410bd55272e5ad9b26f25c2868",
+                "MacAddress": "b6:3c:28:46:9a:81",
+                "IPv4Address": "172.18.0.4/16",
+                "IPv6Address": ""
+            },
+            "3123ae6bc4721e8589a948a3cc05bdd8281476e2c3a3d0ae75768351d99c83c7": {
+                "Name": "WebServer1",
+                "EndpointID": "f0a59a39373a27b0235902eb410c6da34facd2317afdf7b309f5990bae56a5d7",
+                "MacAddress": "22:ab:19:40:67:85",
+                "IPv4Address": "172.18.0.2/16",
+                "IPv6Address": ""
+            },
+            "3396c20ff4835e1ac0062fd35ae19ef1aef0b419330334a4b23893fac2768c62": {
+                "Name": "WebServer2",
+                "EndpointID": "7b4eb215dbe84b292cdcb2aefde04ce3fe2fc5c56baf52c94ec3b9a4a73dcda7",
+                "MacAddress": "c2:f2:e2:c6:bb:cb",
+                "IPv4Address": "172.18.0.3/16",
+                "IPv6Address": ""
+            },
+            "54c5567e14e6a871e16527dad44a2d16820192e10c8532be47d15e08576f4a2e": {
+                "Name": "LoadBalancer",
+                "EndpointID": "da0b7df8bcfdac75567aca03e765335e66f4c8a7a46fa4bc29f0b6708ad06b7c",
+                "MacAddress": "6a:03:03:db:a5:c7",
+                "IPv4Address": "172.18.0.7/16",
+                "IPv6Address": ""
+            },
+            "9d56d695b1d3f68b454e0ebb29993b5308f3ea38f42fe87321af5975f31de52f": {
+                "Name": "WebServer5",
+                "EndpointID": "b7722ac7df9c2f04c55b0fbb64b4ee1a492acc9040a3bbc05634e29459e4eb09",
+                "MacAddress": "32:d7:99:4d:ab:2b",
+                "IPv4Address": "172.18.0.6/16",
+                "IPv6Address": ""
+            },
+            "9eb451d78c0c6e7838173a9cc9749ae29843d8641fd8a144ff7a0bca2d362366": {
+                "Name": "WebServer4",
+                "EndpointID": "f9ebfb5bb427238b912fdcc93b6b27daba61ce793d038283f6b89df6542cc86e",
+                "MacAddress": "2a:05:6f:c3:c3:c5",
+                "IPv4Address": "172.18.0.5/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {}
+    }
+]
+// docker network inspect BackendNet
+[
+    {
+        "Name": "BackendNet",
+        "Id": "8832cca82ce54cbfde1f2671e49b8f06c8e84c132a7143a20913f20b3cc9dd92",
+        "Created": "2025-04-20T22:01:48.206319055Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.19.0.0/16",
+                    "Gateway": "172.19.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "2035170324b89c729f2725f5a93d713d3e07fe0b0387dc7805e7407b7986386c": {
+                "Name": "WebServer3",
+                "EndpointID": "3f32351febbf31725621d2cb4e0c673382f3fb098c1e6504da59fce235b83173",
+                "MacAddress": "76:a0:45:5e:23:3e",
+                "IPv4Address": "172.19.0.5/16",
+                "IPv6Address": ""
+            },
+            "3123ae6bc4721e8589a948a3cc05bdd8281476e2c3a3d0ae75768351d99c83c7": {
+                "Name": "WebServer1",
+                "EndpointID": "1af349c99ae50fa85810ad0be77221d35693006b9a5abd1e6a75060edc966910",
+                "MacAddress": "be:79:cc:d3:aa:63",
+                "IPv4Address": "172.19.0.2/16",
+                "IPv6Address": ""
+            },
+            "3396c20ff4835e1ac0062fd35ae19ef1aef0b419330334a4b23893fac2768c62": {
+                "Name": "WebServer2",
+                "EndpointID": "d0a23acafa2362f016938b1b1ae132c51406b974e6fba435136c605ea3969f67",
+                "MacAddress": "36:6d:23:18:90:35",
+                "IPv4Address": "172.19.0.4/16",
+                "IPv6Address": ""
+            },
+            "9503f2424a4707275cdcc2f527d90b0ef14c9b558ccd0cd56fcec10482a0a808": {
+                "Name": "Database",
+                "EndpointID": "e8b600b52bbe1c3826a280b1cd21339ca591f4a80561c6ec65040bd17af3d129",
+                "MacAddress": "a2:94:88:90:4c:b4",
+                "IPv4Address": "172.19.0.3/16",
+                "IPv6Address": ""
+            },
+            "9d56d695b1d3f68b454e0ebb29993b5308f3ea38f42fe87321af5975f31de52f": {
+                "Name": "WebServer5",
+                "EndpointID": "e669e930430ff2882ddb158d3a092e8c81f607f5d46861a20137af058f641bee",
+                "MacAddress": "a6:a4:77:86:70:71",
+                "IPv4Address": "172.19.0.7/16",
+                "IPv6Address": ""
+            },
+            "9eb451d78c0c6e7838173a9cc9749ae29843d8641fd8a144ff7a0bca2d362366": {
+                "Name": "WebServer4",
+                "EndpointID": "04b1948774da19621f634898b9bbded6c5afeeeaedc7bdfc214cc0d0face6a0a",
+                "MacAddress": "d6:9b:89:62:2f:84",
+                "IPv4Address": "172.19.0.6/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {}
+    }
+]
