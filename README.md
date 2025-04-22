@@ -62,15 +62,7 @@ docker volume create pgdata
 
 **Docker run command**
 ```shell
-docker run --name Database \
---hostname Database -p 15432:5432 \
--e POSTGRES_USER=<user> \
--e POSTGRES_PASSWORD=<password> \
--e POSTGRES_DB=AppDB \
--v pgdata:/var/lib/postgresql/data \
--v "$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql" \
---net ManagementNet \
--d postgres
+docker run --name Database --hostname Database -p 15432:5432 -e POSTGRES_USER=useradmin -e POSTGRES_PASSWORD=secure1234 -e POSTGRES_DB=AppDB -v pgdata:/var/lib/postgresql/data -v "$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql" --net ManagementNet -d postgres
 ```
 Remember to replace the `<user>`and the `<password>` to to real values.
 
@@ -86,15 +78,7 @@ docker volume create pgadmin
 ```
 **Docker run command**
 ```shell
-docker run --name DataBaseManager \
---hostname DataBaseManager \
--p 20001:8000 \
--e PGADMIN_DEFAULT_EMAIL=<email> \
--e PGADMIN_DEFAULT_PASSWORD=<password> \
--e PGADMIN_LISTEN_PORT=8000 \
--v pgadmin:/var/lib/pgadmin \
---net ManagementNet \
--d dpage/pgadmin4
+docker run --name DataBaseManager --hostname DataBaseManager -p 20001:8000 -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=secretsecret -e PGADMIN_LISTEN_PORT=8000 -v pgadmin:/var/lib/pgadmin --net ManagementNet -d dpage/pgadmin4
 ```
 Remember to replace the `<email>` and the `<password>` to real values.
 
@@ -131,12 +115,7 @@ docker run --name WebServer1 --hostname Webserver1 --network FrontendNet -d webs
 ### 4. Mount nginx
 With the nginx.conf file in the actual directory you can execute this command to mount the docker
 ```shell
- docker run --name LoadBalancer \
- --hostname LoadBalancer \
- --network FrontendNet \
- -p 20000:8000 \
- -v "$(pwd)/nginx.conf:/etc/nginx/nginx.conf" \
- -d nginx
+docker run --name LoadBalancer --hostname LoadBalancer --network FrontendNet -p 20000:8000 -v "$(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro" -d nginx
 ```
 
 ## 📝 P2 - Run
