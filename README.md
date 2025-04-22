@@ -54,6 +54,12 @@ docker pull postgres
 ```shell
 docker volume create pgdata
 ```
+
+> [!IMPORTANT]
+> You have to create a network to connect the Database container and the DatabaseManager container, you can do it running the following command.
+>
+> ``` docker network create ManagementNet```
+
 **Docker run command**
 ```shell
 docker run --name Database \
@@ -63,22 +69,11 @@ docker run --name Database \
 -e POSTGRES_DB=AppDB \
 -v pgdata:/var/lib/postgresql/data \
 -v "$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql" \
+--net ManagementNet \
 -d postgres
 ```
 Remember to replace the `<user>`and the `<password>` to to real values.
 
-> [!IMPORTANT]
-> You have to create a network to connect the Database container and the DatabaseManager container, you can do it running the following command.
->
-> ``` docker network create ManagementNet```
->
-> We did it late, so we manually added both containers to the network by executing this command line:
->
-> ``` network connect ManagementNet Database ```
->
-> ``` network connect ManagementNet DataBaseManager ```
->
-> But you can actually connect both of them when you run your docker run command adding this tag: ``` --network ManagementNet ```
 
 ### 2. Mount PGAdmin docker
 **Pull images from docker hub**
@@ -98,9 +93,12 @@ docker run --name DataBaseManager \
 -e PGADMIN_DEFAULT_PASSWORD=<password> \
 -e PGADMIN_LISTEN_PORT=8000 \
 -v pgadmin:/var/lib/pgadmin \
+--net ManagementNet \
 -d dpage/pgadmin4
 ```
 Remember to replace the `<email>` and the `<password>` to real values.
+
+
 ### 3. Mount the WebServers [1-5]
 
 > [!IMPORTANT]
@@ -119,7 +117,7 @@ Now you can build up your WebServer Containers. You have to execute the same com
 docker run --name WebServer1 --hostname Webserver1 --network FrontendNet -d webservers
 ```
 > [!IMPORTANT]
-> You have to create a network called BackendNet also to connect Database and the WebServers, you can do it executing the following line:
+> You have to create a network called BackendNet also to connect the Database and the WebServers, you can do it executing the following line:
 > 
 > ``` docker network create BackendNet ```
 >
@@ -137,7 +135,7 @@ With the nginx.conf file in the actual directory you can execute this command to
  --hostname LoadBalancer \
  --network FrontendNet \
  -p 20000:8000 \
- -v "$(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro" \
+ -v "$(pwd)/nginx.conf:/etc/nginx/nginx.conf" \
  -d nginx
 ```
 
