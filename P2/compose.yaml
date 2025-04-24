@@ -1,0 +1,88 @@
+services:
+  db:
+    container_name: Database
+    hostname: Database
+    image: postgres:latest
+    ports: 
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: "useradmin"
+      POSTGRES_PASSWORD: "secure1234"
+      POSTGRES_DB: AppDB
+    volumes:
+      - "pgdata:/var/lib/postgresql/data"
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+    networks:
+      - ManagementNet
+      - BackendNet
+  db_admin:
+    container_name: DatabaseManager
+    hostname: DatabaseManager
+    image: dpage/pgadmin4
+    ports:
+     - "20001:8000"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: secretsecret
+      PGADMIN_LISTEN_PORT: 8000
+    volumes:
+      - "pgadmin:/var/lib/pgadmin"
+    networks:
+      - ManagementNet
+    depends_on:
+      - db
+  webserver1: &webserver1
+    container_name: WebServer1
+    hostname: WebServer1
+    build: .
+    networks:
+      - FrontendNet
+      - BackendNet
+    depends_on:
+      - db_admin
+  webserver2:
+    <<: *webserver1
+    container_name: WebServer2
+    hostname: WebServer2
+  webserver3:
+    <<: *webserver1
+    container_name: WebServer3
+    hostname: WebServer3
+  webserver4:
+    <<: *webserver1
+    container_name: WebServer4
+    hostname: WebServer4
+  webserver5:
+    <<: *webserver1
+    container_name: WebServer5
+    hostname: WebServer5
+  nginx:
+    image: nginx:latest
+    container_name: LoadBalancer
+    hostname: LoadBalancer
+    ports:
+      - "20000:8000"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+    networks:
+      - FrontendNet
+    depends_on:
+      - webserver1
+      - webserver2
+      - webserver3
+      - webserver4
+      - webserver5
+networks:
+  ManagementNet:
+    driver: bridge
+  BackendNet:
+    driver: bridge
+  FrontendNet:
+    driver: bridge
+volumes:
+  pgdata:
+    external: true
+  pgadmin:
+    external: true
+  
+

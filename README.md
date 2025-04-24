@@ -92,7 +92,7 @@ Remember to replace the `<email>` and the `<password>` to real values.
 
 In the same directory as your  [Dockerfile](/P1/Dockerfile) execute this command line:
 ```
-docker build -t webServers . 
+docker build -t webservers . 
 ```
 This command will build up an Image from your Dockerfile.
 
@@ -115,7 +115,7 @@ docker run --name WebServer1 --hostname Webserver1 --network FrontendNet -d webs
 ### 4. Mount nginx
 With the nginx.conf file in the actual directory you can execute this command to mount the docker
 ```shell
-docker run --name LoadBalancer --hostname LoadBalancer --network FrontendNet -p 20000:8000 -v "$(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro" -d nginx
+docker run --name LoadBalancer --hostname LoadBalancer --network FrontendNet -p 20000:8000 -v "$(pwd)/nginx.conf:/etc/nginx/nginx.conf" -d nginx
 ```
 
 ## 📝 P2 - Run
