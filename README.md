@@ -11,6 +11,7 @@
     - [3. Mount the WebServers \[1-5\]](#3-mount-the-webservers-1-5)
     - [4. Mount nginx](#4-mount-nginx)
   - [📝 P2 - Run](#-p2---run)
+    - [compose.yaml](#composeyaml)
   - [👽 Creators](#-creators)
 
 ## 🌟 Introduction
@@ -64,7 +65,7 @@ docker volume create pgdata
 ```shell
 docker run --name Database --hostname Database -p 15432:5432 -e POSTGRES_USER=useradmin -e POSTGRES_PASSWORD=secure1234 -e POSTGRES_DB=AppDB -v pgdata:/var/lib/postgresql/data -v "$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql" --net ManagementNet -d postgres
 ```
-Remember to replace the `<user>`and the `<password>` to to real values.
+Remember to replace the `<user>` and the `<password>` to real values.
 
 
 ### 2. Mount PGAdmin docker
@@ -119,6 +120,141 @@ docker run --name LoadBalancer --hostname LoadBalancer --network FrontendNet -p 
 ```
 
 ## 📝 P2 - Run
+Explaination of the Docker compose file.
+### compose.yaml
+```yaml
+services:
+  db:
+    container_name: Database
+    hostname: Database
+    image: postgres:latest
+    ports: 
+      - "15432:5432"
+    environment:
+      POSTGRES_USER: "useradmin"
+      POSTGRES_PASSWORD: "secure1234"
+      POSTGRES_DB: AppDB
+    volumes:
+      - "pgdata:/var/lib/postgresql/data"
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+    networks:
+      - ManagementNet
+      - BackendNet
+```
+This creates the `postgreSQL` db container, defining the ports, user, volumens and networks in the process. It also defines a hotename to be later used in the internal networking of the rest of the containers. The image used is the latest.
+
+The mounting of the pgdata volume allows data to persist and the `init.sql` files prepopulates the db.
+
+The `ManagementNet` network is the one used to connect the Database container and the DatabaseManager container. 
+
+The `BackendNet` network is used to to connect the Database and the WebServers.
+
+```yaml
+  db_admin:
+    container_name: DatabaseManager
+    hostname: DatabaseManager
+    image: dpage/pgadmin4
+    ports:
+     - "20001:8000"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: secretsecret
+      PGADMIN_LISTEN_PORT: 8000
+    volumes:
+      - "pgadmin:/var/lib/pgadmin"
+    networks:
+      - ManagementNet
+    depends_on:
+      - db
+```
+
+This part creates the `pgadmin` container. The configuration is similar to the previous one. Since this is the DatabaseManager, it uses of the `ManagementNet` network to communicate with the Database container.
+
+The use of the `depends_on` option ensures that the `db` container is started before the `db_admin` container.
+
+```yaml
+  webserver1: &webserver1
+    container_name: WebServer1
+    hostname: WebServer1
+    build: .
+    networks:
+      - FrontendNet
+      - BackendNet
+    depends_on:
+      - db_admin
+  webserver2:
+    <<: *webserver1
+    container_name: WebServer2
+    hostname: WebServer2
+  webserver3:
+    <<: *webserver1
+    container_name: WebServer3
+    hostname: WebServer3
+  webserver4:
+    <<: *webserver1
+    container_name: WebServer4
+    hostname: WebServer4
+  webserver5:
+    <<: *webserver1
+    container_name: WebServer5
+    hostname: WebServer5
+```
+
+This part defines the creation of the `WebServers`. At first, `webserver1` is created. The build specifies that the container should be built from the current directory. It stablishes the use of the `FrontendNet` and the `BackendNet` that will allow  the connection to ngix and the database respectively. The `depens_on` option is one again use to ensure that the `db_admin` service is running.
+
+Creating an anchor (`&webserver1`) and then using `<<: * webserver1`, allows to copy the configuration settings of `webserver1` into the rest of the webservers.
+
+```yaml
+  nginx:
+    image: nginx:latest
+    container_name: LoadBalancer
+    hostname: LoadBalancer
+    ports:
+      - "20000:8000"
+    volumes:
+      - "./nginx.conf:/etc/nginx/nginx.conf"
+    networks:
+      - FrontendNet
+    depends_on:
+      - webserver1
+      - webserver2
+      - webserver3
+      - webserver4
+      - webserver5
+```
+In here, `ngix` is being mounted. It's defined with the hostname `LoadBalancer`. The volume used the local file `ngix.conf` and the `FrontendNet` network to comunicate with the webservers.
+Once more, the `depends_on` option ensures that the web servers are started before the Nginx container.
+
+```yaml
+networks:
+  ManagementNet:
+    driver: bridge
+  BackendNet:
+    driver: bridge
+  FrontendNet:
+    driver: bridge
+volumes:
+  pgdata:
+    external: true
+  pgadmin:
+    external: true
+```
+Lastly, this final portion of the file defines the networks and volumes referenced throughout the compose file.
+
+The `driver: bridge` in the networks specifies that the networks use the bridge driver, which allows containers connected to this network to communicate with each other.
+
+The `external: true` in the volumnes indicates that this volume is managed externally and must already exist before running the `docker-compose` file.
+
+Alternatively, you could do:
+```yaml
+volumes:
+  pgdata:
+    driver: local
+  pgadmin:
+    driver: local 
+```
+
+This way the volumes will use Docker's default local driver to store data on the host machine. They will be created automatically when you run the `docker-compose`.
 
 ## 👽 Creators  
 - [Verónica Lozada Pérez](https://github.com/veronloz)
