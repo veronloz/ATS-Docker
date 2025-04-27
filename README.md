@@ -120,7 +120,7 @@ docker run --name LoadBalancer --hostname LoadBalancer --network FrontendNet -p 
 ```
 
 ## 📝 P2 - Run
-Explaination of the Docker compose file.
+Explanation of the Docker compose file.
 ### compose.yaml
 ```yaml
 services:
@@ -141,9 +141,9 @@ services:
       - ManagementNet
       - BackendNet
 ```
-This creates the `postgreSQL` db container, defining the ports, user, volumens and networks in the process. It also defines a hotename to be later used in the internal networking of the rest of the containers. The image used is the latest.
+This creates the `postgreSQL` db container, defining the ports, user, volumes and networks in the process. It also defines a hostname to be later used in the internal networking of the rest of the containers. The image used is the latest.
 
-The mounting of the pgdata volume allows data to persist and the `init.sql` files prepopulates the db.
+The mounting of the pgdata volume allows data to persist and the `init.sql` files pre-populates the db.
 
 The `ManagementNet` network is the one used to connect the Database container and the DatabaseManager container. 
 
@@ -200,7 +200,7 @@ The use of the `depends_on` option ensures that the `db` container is started be
     hostname: WebServer5
 ```
 
-This part defines the creation of the `WebServers`. At first, `webserver1` is created. The build specifies that the container should be built from the current directory. It stablishes the use of the `FrontendNet` and the `BackendNet` that will allow  the connection to ngix and the database respectively. The `depens_on` option is one again use to ensure that the `db_admin` service is running.
+This part defines the creation of the `WebServers`. At first, `webserver1` is created. The build specifies that the container should be built from the current directory. It stablish the use of the `FrontendNet` and the `BackendNet` that will allow  the connection to ngix and the database respectively. The `depens_on` option is one again use to ensure that the `db_admin` service is running.
 
 Creating an anchor (`&webserver1`) and then using `<<: * webserver1`, allows to copy the configuration settings of `webserver1` into the rest of the webservers.
 
@@ -222,7 +222,7 @@ Creating an anchor (`&webserver1`) and then using `<<: * webserver1`, allows to 
       - webserver4
       - webserver5
 ```
-In here, `ngix` is being mounted. It's defined with the hostname `LoadBalancer`. The volume used the local file `ngix.conf` and the `FrontendNet` network to comunicate with the webservers.
+In here, `ngix` is being mounted. It's defined with the hostname `LoadBalancer`. The volume used the local file `ngix.conf` and the `FrontendNet` network to communicate with the webservers.
 Once more, the `depends_on` option ensures that the web servers are started before the Nginx container.
 
 ```yaml
@@ -243,7 +243,7 @@ Lastly, this final portion of the file defines the networks and volumes referenc
 
 The `driver: bridge` in the networks specifies that the networks use the bridge driver, which allows containers connected to this network to communicate with each other.
 
-The `external: true` in the volumnes indicates that this volume is managed externally and must already exist before running the `docker-compose` file.
+The `external: true` in the volumes indicates that this volume is managed externally and must already exist before running the `docker-compose` file.
 
 Alternatively, you could do:
 ```yaml
@@ -255,6 +255,13 @@ volumes:
 ```
 
 This way the volumes will use Docker's default local driver to store data on the host machine. They will be created automatically when you run the `docker-compose`.
+
+Finally, to initialize and deploy all defined services in the `docker-compose` file, you can execute the following command:
+``` bash
+docker compose up -d
+```
+
+By running it in the detached mode (`-d`) it is guaranteed that the services will be started respecting the dependencies and the network configurations.
 
 ## 👽 Creators  
 - [Verónica Lozada Pérez](https://github.com/veronloz)
